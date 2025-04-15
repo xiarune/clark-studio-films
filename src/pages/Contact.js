@@ -1,182 +1,194 @@
 // src/pages/Contact.js
 import React, { useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import backgroundImage from '../assets/images/background-home.jpg';
-
-const fadeIn = keyframes`
-  from { opacity: 0 }
-  to { opacity: 1 }
-`;
 
 const PageWrapper = styled.div`
   background-image: url(${backgroundImage});
   background-size: cover;
   background-position: center;
   min-height: 100vh;
-  padding: 5rem 2rem;
   color: white;
   font-family: 'Georgia', serif;
+  padding: 5rem 2rem;
 `;
 
-const FormWrapper = styled.div`
-  max-width: 600px;
+const Overlay = styled.div`
+  background-color: rgba(0, 0, 0, 0.75);
+  padding: 3rem;
+  border-radius: 12px;
+  max-width: 800px;
   margin: 0 auto;
-  animation: ${fadeIn} 0.5s ease;
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 2rem;
-  border-radius: 10px;
 `;
 
-const Title = styled.h2`
-  text-align: center;
-  font-size: 2rem;
-  margin-bottom: 2rem;
+const SectionTitle = styled.h3`
+  font-size: 1.3rem;
+  font-family: 'Inter', sans-serif;
+  color: #ccc;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+`;
+
+const Paragraph = styled.p`
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 1.5rem;
+  color: #ddd;
 `;
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
+  gap: 1.2rem;
 `;
 
-const InputRow = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+const Label = styled.label`
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
 `;
 
 const Input = styled.input`
-  flex: 1;
-  padding: 0.75rem;
+  padding: 0.8rem;
   font-size: 1rem;
+  font-family: 'Inter', sans-serif;
   border-radius: 5px;
   border: none;
-  margin-bottom: 1.5rem;
 `;
 
-const TextArea = styled.textarea`
-  padding: 0.75rem;
+const Textarea = styled.textarea`
+  padding: 0.8rem;
   font-size: 1rem;
+  font-family: 'Inter', sans-serif;
   border-radius: 5px;
   border: none;
-  min-height: 120px;
-  margin-bottom: 1.5rem;
+  resize: vertical;
 `;
 
-const HiddenField = styled.input`
-  display: none;
-`;
-
-const Button = styled.button`
-  padding: 0.75rem;
+const SubmitButton = styled.button`
+  padding: 0.9rem 2rem;
   font-size: 1rem;
-  border: none;
-  border-radius: 5px;
+  font-family: 'Georgia', serif;
   background-color: white;
   color: black;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease;
 
   &:hover {
     background-color: #ddd;
   }
 `;
 
-const Message = styled.p`
-  margin-top: 1rem;
-  text-align: center;
-  color: ${props => (props.error ? 'red' : 'lightgreen')};
+const Error = styled.span`
+  color: #ff6b6b;
+  font-size: 0.9rem;
 `;
 
 export default function Contact() {
-  const [formData, setFormData] = useState({
-    firstName: '', lastName: '', email: '', phone: '', message: '', honeypot: ''
+  const [form, setForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    message: '',
+    honeypot: ''
   });
-  const [status, setStatus] = useState('');
 
-  const validateEmail = email =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const [errors, setErrors] = useState({});
 
-  const validatePhone = phone =>
-    /^\+?[0-9\s()-]{7,15}$/.test(phone);
+  const validate = () => {
+    const newErrors = {};
+    if (!form.firstName.trim()) newErrors.firstName = 'First name is required';
+    if (!form.lastName.trim()) newErrors.lastName = 'Last name is required';
+    if (!/\S+@\S+\.\S+/.test(form.email)) newErrors.email = 'Valid email required';
+    if (!/^\d{10}$/.test(form.phone.replace(/[^0-9]/g, ''))) newErrors.phone = 'Valid 10-digit phone number required';
+    if (!form.message.trim()) newErrors.message = 'Message is required';
+    return newErrors;
+  };
 
-  const handleSubmit = e => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (formData.honeypot) return;
+    const newErrors = validate();
+    if (form.honeypot) return; // Bot detected
 
-    if (!formData.firstName || !formData.lastName || !formData.email || !formData.message) {
-      setStatus('Please fill in all required fields.');
-      return;
+    if (Object.keys(newErrors).length === 0) {
+      alert('Message sent!');
+      setForm({ firstName: '', lastName: '', email: '', phone: '', message: '', honeypot: '' });
+      setErrors({});
+    } else {
+      setErrors(newErrors);
     }
-
-    if (!validateEmail(formData.email)) {
-      setStatus('Please enter a valid email address.');
-      return;
-    }
-
-    if (formData.phone && !validatePhone(formData.phone)) {
-      setStatus('Invalid phone number.');
-      return;
-    }
-
-    setStatus('Message sent successfully!');
-    setFormData({ firstName: '', lastName: '', email: '', phone: '', message: '', honeypot: '' });
   };
 
   return (
     <PageWrapper>
-      <FormWrapper>
-        <Title>Contact</Title>
+      <Overlay>
+        <SectionTitle>Disclaimer</SectionTitle>
+        <Paragraph>
+        CSF is a non-profit effort. All music used is not being used for monetization. 
+        This  applies to every project mentioned. Copyright Disclaimer Under Section 107 
+        of the Copyright Act 1976, allowance is made for "fair use" for purposes such as 
+        criticism, comment, news reporting, teaching, scholarship, and research. 
+        Fair use is a use permitted by copyright statute that might otherwise be infringing. 
+        Non-profit, educational or personal use tips the balance in favor of fair use. 
+        No copyright infringement intended. All rights to the respective owners.
+        </Paragraph>
+
+        <SectionTitle>Tools of Trade</SectionTitle>
+        <Paragraph>
+        Editor: Davinci Resolve <br></br>
+        Camera: Canon EOS 60D Photography <br></br>
+        Editor: Adobe Photoshop
+        </Paragraph>
+
         <Form onSubmit={handleSubmit}>
-          <HiddenField
-            type="text"
-            name="honeypot"
-            value={formData.honeypot}
-            onChange={e => setFormData({ ...formData, honeypot: e.target.value })}
-            aria-hidden="true"
-            tabIndex="-1"
-            autoComplete="off"
-          />
-          <InputRow>
-            <Input
-              type="text"
-              placeholder="First Name"
-              value={formData.firstName}
-              onChange={e => setFormData({ ...formData, firstName: e.target.value })}
-              required
-            />
-            <Input
-              type="text"
-              placeholder="Last Name"
-              value={formData.lastName}
-              onChange={e => setFormData({ ...formData, lastName: e.target.value })}
-              required
-            />
-          </InputRow>
-          <Input
-            type="email"
-            placeholder="Email Address"
-            value={formData.email}
-            onChange={e => setFormData({ ...formData, email: e.target.value })}
-            required
-          />
-          <Input
-            type="tel"
-            placeholder="Phone Number (optional)"
-            value={formData.phone}
-            onChange={e => setFormData({ ...formData, phone: e.target.value })}
-          />
-          <TextArea
-            placeholder="Your message..."
-            value={formData.message}
-            onChange={e => setFormData({ ...formData, message: e.target.value })}
-            required
-          />
-          <Button type="submit">Send Message</Button>
-          {status && <Message error={status.startsWith('Please') || status.startsWith('Invalid')}>{status}</Message>}
+          <Label>
+            First Name:
+            <Input type="text" name="firstName" value={form.firstName} onChange={handleChange} />
+            {errors.firstName && <Error>{errors.firstName}</Error>}
+          </Label>
+
+          <Label>
+            Last Name:
+            <Input type="text" name="lastName" value={form.lastName} onChange={handleChange} />
+            {errors.lastName && <Error>{errors.lastName}</Error>}
+          </Label>
+
+          <Label>
+            Email:
+            <Input type="email" name="email" value={form.email} onChange={handleChange} />
+            {errors.email && <Error>{errors.email}</Error>}
+          </Label>
+
+          <Label>
+            Phone:
+            <Input type="text" name="phone" value={form.phone} onChange={handleChange} placeholder="e.g., 5551234567" />
+            {errors.phone && <Error>{errors.phone}</Error>}
+          </Label>
+
+          <Label>
+            Message:
+            <Textarea rows="5" name="message" value={form.message} onChange={handleChange} />
+            {errors.message && <Error>{errors.message}</Error>}
+          </Label>
+
+          {/* Honeypot field (invisible to users) */}
+          <input type="text" name="honeypot" value={form.honeypot} onChange={handleChange} style={{ display: 'none' }} />
+
+          <SubmitButton type="submit">Send</SubmitButton>
         </Form>
-      </FormWrapper>
+      </Overlay>
     </PageWrapper>
   );
 }
+
 
 
 
