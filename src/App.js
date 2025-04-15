@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import React from 'react';
+import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import Home from './pages/Home';
+import Films from './pages/Films';
+import Shows from './pages/Shows';
+import Misc from './pages/Misc';
+import About from './pages/About';
+import Contact from './pages/Contact';
 
-function App() {
+function AnimatedRoutes() {
+  const location = useLocation();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<Home />} />
+        <Route path="/films" element={<Films />} />
+        <Route path="/shows" element={<Shows />} />
+        <Route path="/misc" element={<Misc />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+      </Routes>
+    </AnimatePresence>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <Router>
+      <Navbar />
+      <AnimatedRoutes />
+      <Footer />
+    </Router>
+  );
+}
+
+
