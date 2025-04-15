@@ -195,7 +195,7 @@ export default function Home() {
         <UpcomingSection>
           <UpcomingImage src={poster3} alt="Upcoming Film 3 Poster" />
           <UpcomingText>
-            <ComingTitle>Coming Soon<br />Film 3</ComingTitle>
+            <ComingTitle>Coming Soon<br />Dogme d'Ivoire</ComingTitle>
             <Synopsis>
               <strong>Synopsis:</strong>
               A man travels through realities to escape his own.
