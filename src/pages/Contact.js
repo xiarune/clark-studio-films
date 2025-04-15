@@ -13,33 +13,32 @@ const PageWrapper = styled.div`
   padding: 5rem 2rem;
 `;
 
-const Overlay = styled.div`
+const ContentBox = styled.div`
   background-color: rgba(0, 0, 0, 0.75);
-  padding: 3rem;
   border-radius: 12px;
   max-width: 800px;
-  margin: 0 auto;
+  margin: 0 auto 3rem;
+  padding: 3rem;
 `;
 
 const SectionTitle = styled.h3`
   font-size: 1.3rem;
   font-family: 'Inter', sans-serif;
   color: #ccc;
-  margin-top: 2rem;
   margin-bottom: 0.5rem;
 `;
 
 const Paragraph = styled.p`
   font-size: 1rem;
   font-family: 'Inter', sans-serif;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.8rem;
   color: #ddd;
 `;
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 1.4rem;
 `;
 
 const Label = styled.label`
@@ -116,7 +115,7 @@ export default function Contact() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const newErrors = validate();
-    if (form.honeypot) return; // Bot detected
+    if (form.honeypot) return; // Anti-spam honeypot field
 
     if (Object.keys(newErrors).length === 0) {
       alert('Message sent!');
@@ -129,25 +128,22 @@ export default function Contact() {
 
   return (
     <PageWrapper>
-      <Overlay>
+      {/* Disclaimer + Tools Section */}
+      <ContentBox>
         <SectionTitle>Disclaimer</SectionTitle>
         <Paragraph>
-        CSF is a non-profit effort. All music used is not being used for monetization. 
-        This  applies to every project mentioned. Copyright Disclaimer Under Section 107 
-        of the Copyright Act 1976, allowance is made for "fair use" for purposes such as 
-        criticism, comment, news reporting, teaching, scholarship, and research. 
-        Fair use is a use permitted by copyright statute that might otherwise be infringing. 
-        Non-profit, educational or personal use tips the balance in favor of fair use. 
-        No copyright infringement intended. All rights to the respective owners.
+          This is a student portfolio. All content is for demonstration purposes only. Films, images, and details belong to their respective creators. No commercial intent is associated.
         </Paragraph>
 
         <SectionTitle>Tools of Trade</SectionTitle>
         <Paragraph>
-        Editor: Davinci Resolve <br></br>
-        Camera: Canon EOS 60D Photography <br></br>
-        Editor: Adobe Photoshop
+          This portfolio uses React.js and Styled Components to build a modular and responsive experience. Assets are locally managed, and image grids are custom-configured to preserve quality and structure.
         </Paragraph>
+      </ContentBox>
 
+      {/* Contact Form Section */}
+      <ContentBox>
+        <SectionTitle>Contact Us</SectionTitle>
         <Form onSubmit={handleSubmit}>
           <Label>
             First Name:
@@ -179,15 +175,16 @@ export default function Contact() {
             {errors.message && <Error>{errors.message}</Error>}
           </Label>
 
-          {/* Honeypot field (invisible to users) */}
+          {/* Honeypot field (hidden from users) */}
           <input type="text" name="honeypot" value={form.honeypot} onChange={handleChange} style={{ display: 'none' }} />
 
           <SubmitButton type="submit">Send</SubmitButton>
         </Form>
-      </Overlay>
+      </ContentBox>
     </PageWrapper>
   );
 }
+
 
 
 
